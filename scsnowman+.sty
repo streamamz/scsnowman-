@@ -1,9 +1,69 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{scsnowman+}[2020/09/16 v1.1]
+\ProvidesPackage{scsnowman+}[2020/11/24 v1.2]
 \RequirePackage{scsnowman, xkeyval}
+\usetikzlibrary{shadings}
 
 %%%%%
-%%%%%patternmatching
+\newif\ifst@snowman@body@shade\st@snowman@body@shadefalse
+\newif\ifst@snowman@eyes@shade\st@snowman@eyes@shadefalse
+\newif\ifst@snowman@nose@shade\st@snowman@nose@shadefalse
+\newif\ifst@snowman@sweat@shade\st@snowman@sweat@shadefalse
+\newif\ifst@snowman@hat@shade\st@snowman@hat@shadefalse
+\newif\ifst@snowman@arms@shade\st@snowman@arms@shadefalse
+\newif\ifst@snowman@muffler@shade\st@snowman@muffler@shadefalse
+\newif\ifst@snowman@buttons@shade\st@snowman@buttons@shadefalse
+\newif\ifst@snowman@snow@shade\st@snowman@snow@shadefalse
+\newif\ifst@snowman@note@shade\st@snowman@note@shadefalse
+\newif\ifst@snowman@mikan@shade\st@snowman@mikan@shadefalse
+\newif\ifst@snowman@leaf@shade\st@snowman@leaf@shadefalse
+%---
+\def\st@snowman@boolean#1#2{%
+    \csname sctkzsym@snowman@#1#2\endcsname
+}
+%%%%%
+\def\st@snowman@color#1#2{%
+    \expandafter\edef\csname sctkzsym@snowman@#1\endcsname{#2}%
+}
+\def\st@snowman@color@default{%
+    \def\sctkzsym@snowman@bodystroke{black}%
+    \def\sctkzsym@snowman@bodyfill{white}%
+    \def\sctkzsym@snowman@shadebody{left color=lightgray, right color=white}%
+    \def\sctkzsym@snowman@snowstroke{black}%
+    \def\sctkzsym@snowman@snowfill{white}%
+    \def\sctkzsym@snowman@shadesnow{left color=lightgray, right color=white}%
+    \def\sctkzsym@snowman@eyefill{black}%
+    \def\sctkzsym@snowman@shadeeye{left color=black, right color=darkgray}%
+    \def\sctkzsym@snowman@nosestroke{black}%
+    \def\sctkzsym@snowman@nosefill{black}%
+    \def\sctkzsym@snowman@shadenose{left color=black, right color=darkgray}%
+    \def\sctkzsym@snowman@mouthstroke{black}%
+    \def\sctkzsym@snowman@sweatstroke{black}%
+    \def\sctkzsym@snowman@sweatfill{black}%
+    \def\sctkzsym@snowman@shadesweat{left color=black, right color=darkgray}%
+    \def\sctkzsym@snowman@hatstroke{black}%
+    \def\sctkzsym@snowman@hatfill{black}%
+    \def\sctkzsym@snowman@shadehat{left color=black, right color=darkgray}%
+    \def\sctkzsym@snowman@armsstroke{black}%
+    \def\sctkzsym@snowman@armsfill{black}%
+    \def\sctkzsym@snowman@shadearms{left color=black, right color=darkgray}%
+    \def\sctkzsym@snowman@mufflerstroke{black}%
+    \def\sctkzsym@snowman@mufflerfill{black}%
+    \def\sctkzsym@snowman@shademuffler{left color=black, right color=darkgray}%
+    \def\sctkzsym@snowman@buttonstroke{black}%
+    \def\sctkzsym@snowman@buttonfill{black}%
+    \def\sctkzsym@snowman@shadebutton{left color=black, right color=darkgray}%
+    \def\sctkzsym@snowman@notefill{black}%
+    \def\sctkzsym@snowman@shadenote{left color=black, right color=darkgray}%
+    \def\sctkzsym@snowman@mikanstroke{black}%
+    \def\sctkzsym@snowman@mikanfill{black}%
+    \def\sctkzsym@snowman@shademikan{left color=black, right color=darkgray}%
+    \def\sctkzsym@snowman@leafstroke{black}%
+    \def\sctkzsym@snowman@leaffill{black}%
+    \def\sctkzsym@snowman@shadeleaf{left color=black, right color=darkgray}%
+    \def\sctkzsym@snowman@broomstroke{black}%
+}
+\st@snowman@color@default
+%%%%%
 \newif\ifst@match@success\st@match@successfalse
 \def\st@match@wildpattern{_}
 \def\st@pmatchbegin#1{\def\st@match@ref{#1}}
@@ -22,72 +82,84 @@
     \fi\fi\fi
 }
 %%%%%
-\def\st@snowman@boolean#1#2{%
-    \csname sctkzsym@snowman@#1#2\endcsname
-}
-
-%%%%%
 %scale
-\define@key{STsnowman}{scale}{%
+\define@key{st@snowman}{scale}{%
     \def\sctkzsym@snowman@scale{#1}%
 }
-%height
-\define@key{STsnowman}{bbheight}{%
+\define@key{st@snowman}{bbheight}{%
     \pgfmathparse{#1 / 1.8ex}%
     \edef\sctkzsym@snowman@scale{\pgfmathresult}%
 }
-\define@key{STsnowman}{smheight}{%
+\define@key{st@snowman}{smheight}{%
     \pgfmathparse{#1 / 1.152ex}%
     \edef\sctkzsym@snowman@scale{\pgfmathresult}%
 }
 %adjustbaseline
-\define@key{STsnowman}{adjustbaseline}[true]{%
+\define@key{st@snowman}{adjustbaseline}[true]{%
     \st@snowman@boolean{adjustbaseline}{#1}%
 }
 %body
-\define@key{STsnowman}{body}{%
+\define@key{st@snowman}{body}{%
     \def\sctkzsym@snowman@bodystroke{#1}%
     \def\sctkzsym@snowman@bodyfill{#1}%
 }
-\define@key{STsnowman}{bodystroke}{%
-    \def\sctkzsym@snowman@bodystroke{#1}%
-}
-\define@key{STsnowman}{bodyfill}{%
-    \def\sctkzsym@snowman@bodyfill{#1}%
+\define@key{st@snowman}{bodystroke}{\def\sctkzsym@snowman@bodystroke{#1}}
+\define@key{st@snowman}{bodyfill}{\def\sctkzsym@snowman@bodyfill{#1}}
+\define@key{st@snowman}{shadebody}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{\st@snowman@body@shadetrue}%
+        \st@match@string{false}{\st@snowman@body@shadefalse}%
+        \st@match@string{_}{%
+            \st@snowman@body@shadetrue
+            \def\sctkzsym@snowman@shadebody{#1}%
+        }%
+    \st@pmatchend
 }
 %eyes
-\define@key{STsnowman}{eyes}[true]{%
+\define@key{st@snowman}{eyes}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{eyes}{true}}%
         \st@match@string{false}{\st@snowman@boolean{eyes}{false}}%
-        \st@match@string{_}{\def\sctkzsym@snowman@eyefill{#1}}%
-    \st@pmatchend%
+        \st@match@string{_}{%
+            \st@snowman@boolean{eyes}{true}%
+            \def\sctkzsym@snowman@eyefill{#1}%
+        }%
+    \st@pmatchend
 }
-%mouth
-\define@key{STsnowman}{mouth}[true]{%
+\define@key{st@snowman}{shadeeyes}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{%
-            \st@snowman@boolean{mouth}{true}%
+            \st@snowman@eyes@shadetrue 
+            \st@snowman@boolean{eyes}{true}%
         }%
-        \st@match@string{false}{%
-            \st@snowman@boolean{mouth}{false}%
-        }%
-        \st@match@string{smile}{%
-            \def\sctkzsym@snowman@mouthshape{smile}%
-        }%
-        \st@match@string{frown}{%
-            \def\sctkzsym@snowman@mouthshape{frown}%
-        }%
-        \st@match@string{tight}{%
-            \def\sctkzsym@snowman@mouthshape{tight}%
-        }%
+        \st@match@string{false}{\st@snowman@eyes@shadefalse}%    
         \st@match@string{_}{%
+            \st@snowman@boolean{eyes}{true}%
+            \st@snowman@eyes@shadetrue   
+            \def\sctkzsym@snowman@shadeeye{#1}% 
+        }%
+    \st@pmatchend
+}
+%mouth
+\define@key{st@snowman}{mouth}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{\st@snowman@boolean{mouth}{true}}%
+        \st@match@string{false}{\st@snowman@boolean{mouth}{false}}%
+        \st@match@string{_}{%
+            \st@snowman@boolean{mouth}{true}%
             \def\sctkzsym@snowman@mouthstroke{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
+}
+\define@key{st@snowman}{mouthshape}[smile]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{smile}{\def\sctkzsym@snowman@mouthshape{smile}}%
+        \st@match@string{frown}{\def\sctkzsym@snowman@mouthshape{frown}}%
+        \st@match@string{tight}{\def\sctkzsym@snowman@mouthshape{tight}}%
+    \st@pmatchend
 }
 %nose
-\define@key{STsnowman}{nose}[true]{%
+\define@key{st@snowman}{nose}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{nose}{true}}%
         \st@match@string{false}{\st@snowman@boolean{nose}{false}}%
@@ -96,120 +168,192 @@
             \def\sctkzsym@snowman@nosefill{#1}%
             \def\sctkzsym@snowman@nosestroke{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
 }
-\define@key{STsnowman}{nosefill}{%
+\define@key{st@snowman}{nosefill}{%
     \st@snowman@boolean{nose}{true}%
     \def\sctkzsym@snowman@nosefill{#1}%
 }
-\define@key{STsnowman}{nosestroke}{%
+\define@key{st@snowman}{nosestroke}{%
     \st@snowman@boolean{nose}{true}%
     \def\sctkzsym@snowman@nosestroke{#1}%
 }
+\define@key{st@snowman}{shadenose}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{%
+            \st@snowman@nose@shadetrue
+            \st@snowman@boolean{nose}{true}%
+        }%
+        \st@match@string{false}{\st@snowman@nose@shadefalse}%
+        \st@match@string{_}{%
+            \st@snowman@boolean{nose}{true}%
+            \st@snowman@nose@shadetrue   
+            \def\sctkzsym@snowman@shadenose{#1}%
+        }%
+    \st@pmatchend
+}
 %sweat
-\define@key{STsnowman}{sweat}[true]{%
+\define@key{st@snowman}{sweat}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{sweat}{true}}%
         \st@match@string{false}{\st@snowman@boolean{sweat}{false}}%
         \st@match@string{_}{%
             \st@snowman@boolean{sweat}{true}%
-            \def\sctkzsym@snowman@sweatstroke{#1}%
-            \def\sctkzsym@snowman@sweatfill{#1}%
+            \st@snowman@color{sweatfill}{#1}%
+            \st@snowman@color{sweatstroke}{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
 }
-\define@key{STsnowman}{sweatstroke}{%
+\define@key{st@snowman}{sweatfill}{%
     \st@snowman@boolean{sweat}{true}%
-    \def\sctkzsym@snowman@sweatstroke{#1}%
+    \st@snowman@color{sweatfill}{#1}%
 }
-\define@key{STsnowman}{sweatfill}{%
+\define@key{st@snowman}{sweatstroke}{%
     \st@snowman@boolean{sweat}{true}%
-    \def\sctkzsym@snowman@sweatfill{#1}%
+    \st@snowman@color{sweatstroke}{#1}%
 }
-%-------------
-%hat
-\define@key{STsnowman}{hat}[true]{%
+\define@key{st@snowman}{shadesweat}[true]{%
     \st@pmatchbegin{#1}%
-        \st@match@string{true}{\sctkzsym@snowman@hattrue}%
+        \st@match@string{true}{%
+            \st@snowman@sweat@shadetrue
+            \st@snowman@boolean{sweat}{true}%
+        }%
+        \st@match@string{false}{%
+            \st@snowman@sweat@shadefalse
+        }%
+        \st@match@string{_}{%
+            \st@snowman@sweat@shadetrue
+            \st@snowman@boolean{sweat}{true}%
+            \def\sctkzsym@snowman@shadesweat{#1}%
+        }%
+    \st@pmatchend
+}
+%hat
+\define@key{st@snowman}{hat}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{\st@snowman@boolean{hat}{true}}%
         \st@match@string{false}{\st@snowman@boolean{hat}{false}}%
         \st@match@string{_}{%
             \st@snowman@boolean{hat}{true}%
-            \def\sctkzsym@snowman@hatstroke{#1}%
             \def\sctkzsym@snowman@hatfill{#1}%
+            \def\sctkzsym@snowman@hatstroke{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
 }
-\define@key{STsnowman}{hatstroke}{%
-    \st@snowman@boolean{hat}{true}%
-    \def\sctkzsym@snowman@hatstroke{#1}%
-}
-\define@key{STsnowman}{hatfill}{%
+\define@key{st@snowman}{hatfill}{%
     \st@snowman@boolean{hat}{true}%
     \def\sctkzsym@snowman@hatfill{#1}%
 }
-%--------------
+\define@key{st@snowman}{hatstroke}{%
+    \st@snowman@boolean{hat}{true}%
+    \def\sctkzsym@snowman@hatstroke{#1}%
+}
+\define@key{st@snowman}{shadehat}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{\st@snowman@boolean{hat}{true}\st@snowman@hat@shadetrue}%
+        \st@match@string{false}{\st@snowman@hat@shadefalse}%
+        \st@match@string{_}{%
+            \st@snowman@boolean{hat}{true}%
+            \st@snowman@hat@shadetrue
+            \def\sctkzsym@snowman@shadehat{#1}%
+        }%
+    \st@pmatchend
+}
 %arms
-\define@key{STsnowman}{arms}[true]{%
+\define@key{st@snowman}{arms}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{arms}{true}}%
         \st@match@string{false}{\st@snowman@boolean{arms}{false}}%
         \st@match@string{_}{%
             \st@snowman@boolean{arms}{true}%
-            \def\sctkzsym@snowman@armsstroke{#1}%
             \def\sctkzsym@snowman@armsfill{#1}%
+            \def\sctkzsym@snowman@armsstroke{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
 }
-\define@key{STsnowman}{armsstroke}{%
-    \st@snowman@boolean{arms}{true}%
-    \def\sctkzsym@snowman@armsstroke{#1}%
-}
-\define@key{STsnowman}{armsfill}{%
+\define@key{st@snowman}{armsfill}{%
     \st@snowman@boolean{arms}{true}%
     \def\sctkzsym@snowman@armsfill{#1}%
 }
+\define@key{st@snowman}{armsstroke}{%
+    \st@snowman@boolean{arms}{true}%
+    \def\sctkzsym@snowman@armsstroke{#1}%
+}
+\define@key{st@snowman}{shadearms}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{\st@snowman@boolean{arms}{true}\st@snowman@arms@shadetrue}%
+        \st@match@string{false}{\st@snowman@arms@shadefalse}%
+        \st@match@string{_}{%
+            \st@snowman@arms@shadetrue
+            \st@snowman@boolean{arms}{true}%
+            \def\sctkzsym@snowman@shadearms{#1}%
+        }%
+    \st@pmatchend
+}
 %muffler
-\define@key{STsnowman}{muffler}[true]{%
+\define@key{st@snowman}{muffler}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{muffler}{true}}%
         \st@match@string{false}{\st@snowman@boolean{muffler}{false}}%
         \st@match@string{_}{%
             \st@snowman@boolean{muffler}{true}%
-            \def\sctkzsym@snowman@mufflerstroke{#1}%
             \def\sctkzsym@snowman@mufflerfill{#1}%
+            \def\sctkzsym@snowman@mufflerstroke{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
 }
-\define@key{STsnowman}{mufflerstroke}{%
-    \st@snowman@boolean{muffler}{true}%
-    \def\sctkzsym@snowman@mufflerstroke{#1}%
-}
-\define@key{STsnowman}{mufflerfill}{%
+\define@key{st@snowman}{mufflerfill}{%
     \st@snowman@boolean{muffler}{true}%
     \def\sctkzsym@snowman@mufflerfill{#1}%
 }
+\define@key{st@snowman}{mufflerstroke}{%
+    \st@snowman@boolean{muffler}{true}%
+    \def\sctkzsym@snowman@mufflerstroke{#1}%
+}
+\define@key{st@snowman}{shademuffler}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{\st@snowman@muffler@shadetrue\st@snowman@boolean{muffler}{true}}%
+        \st@match@string{false}{\st@snowman@muffler@shadefalse}%
+        \st@match@string{_}{%
+            \st@snowman@muffler@shadetrue
+            \st@snowman@boolean{muffler}{true}%
+            \def\sctkzsym@snowman@shademuffler{#1}%
+        }%
+    \st@pmatchend
+}
 %buttons
-\define@key{STsnowman}{buttons}[true]{%
+\define@key{st@snowman}{buttons}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{buttons}{true}}%
-        \st@match@sring{false}{\st@snowman@boolean{buttons}{false}}%
+        \st@match@string{false}{\st@snowman@boolean{buttons}{false}}%
         \st@match@string{_}{%
             \st@snowman@boolean{buttons}{true}%
-            \def\sctkzsym@snowman@buttonstroke{#1}%
             \def\sctkzsym@snowman@buttonfill{#1}%
+            \def\sctkzsym@snowman@buttonstroke{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
 }
-\define@key{STsnowman}{buttonstroke}{%
-    \st@snowman@boolean{buttons}{true}%
-    \def\sctkzsym@snowman@buttonstroke{#1}%
-}
-\define@key{STsnowman}{buttonfill}{%
+\define@key{st@snowman}{buttonfill}{%
     \st@snowman@boolean{buttons}{true}%
     \def\sctkzsym@snowman@buttonfill{#1}%
 }
+\define@key{st@snowman}{buttonstroke}{%
+    \st@snowman@boolean{buttons}{true}%
+    \def\sctkzsym@snowman@buttonstroke{#1}%
+}
+\define@key{st@snowman}{shadebutton}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{\st@snowman@boolean{buttons}{true}\st@snowman@buttons@shadetrue}%
+        \st@match@string{false}{\st@snowman@buttons@shadefalse}%
+        \st@match@string{_}{%
+            \st@snowman@boolean{buttons}{true}%
+            \st@snowman@buttons@shadetrue
+            \def\sctkzsym@snowman@shadebutton{#1}%
+        }%
+    \st@pmatchend
+}
 %snow
-\define@key{STsnowman}{snow}[true]{%
+\define@key{st@snowman}{snow}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{snow}{true}}%
         \st@match@string{false}{\st@snowman@boolean{snow}{false}}%
@@ -218,29 +362,51 @@
             \def\sctkzsym@snowman@snowfill{#1}%
             \def\sctkzsym@snowman@snowstroke{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
 }
-\define@key{STsnowman}{snowstroke}{%
-    \st@snowman@boolean{snow}{true}%
-    \def\sctkzsym@snowman@snowstroke{#1}%
-}
-\define@key{STsnowman}{snowfill}{%
+\define@key{st@snowman}{snowfill}{%
     \st@snowman@boolean{snow}{true}%
     \def\sctkzsym@snowman@snowfill{#1}%
 }
+\define@key{st@snowman}{snowstroke}{%
+    \st@snowman@boolean{snow}{true}%
+    \def\sctkzsym@snowman@snowstroke{#1}%
+}
+\define@key{st@snowman}{shadesnow}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{\st@snowman@boolean{snow}{true}\st@snowman@snow@shadetrue}%
+        \st@match@string{false}{\st@snowman@snow@shadefalse}%
+        \st@match@string{_}{%
+            \st@snowman@snow@shadetrue
+            \st@snowman@boolean{snow}{true}%
+            \def\sctkzsym@snowman@shadesnow{#1}%
+        }%
+    \st@pmatchend
+}
 %note
-\define@key{STsnowman}{note}[true]{%
+\define@key{st@snowman}{note}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{note}{true}}%
         \st@match@string{false}{\st@snowman@boolean{note}{false}}%
         \st@match@string{_}{%
-            \st@snowman@boolean{snow}{true}%
+            \st@snowman@boolean{note}{true}%
             \def\sctkzsym@snowman@notefill{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
+}
+\define@key{st@snowman}{shadenote}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{\st@snowman@boolean{note}{true}\st@snowman@note@shadetrue}%
+        \st@match@string{false}{\st@snowman@note@shadefalse}%
+        \st@match@string{_}{%
+            \st@snowman@boolean{note}{true}%
+            \st@snowman@note@shadetrue%
+            \def\sctkzsym@snowman@shadenote{#1}%
+        }%
+    \st@pmatchend
 }
 %mikan
-\define@key{STsnowman}{mikan}[true]{%
+\define@key{st@snowman}{mikan}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{mikan}{true}}%
         \st@match@string{false}{\st@snowman@boolean{mikan}{false}}%
@@ -249,18 +415,34 @@
             \def\sctkzsym@snowman@mikanfill{#1}%
             \def\sctkzsym@snowman@mikanstroke{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
 }
-\define@key{STsnowman}{mikanstroke}{%
-    \st@snowman@boolean{mikan}{true}%
-    \def\sctkzsym@snowman@mikanstroke{#1}%
-}
-\define@key{STsnowman}{mikanfill}{%
+\define@key{st@snowman}{mikanfill}{%
     \st@snowman@boolean{mikan}{true}%
     \def\sctkzsym@snowman@mikanfill{#1}%
 }
+\define@key{st@snowman}{mikanstroke}{%
+    \st@snowman@boolean{mikan}{true}%
+    \def\sctkzsym@snowman@mikanstroke{#1}%
+}
+\define@key{st@snowman}{shademikan}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{%
+            \st@snowman@boolean{mikan}{true}%
+            \st@snowman@mikan@shadetrue%
+        }%
+        \st@match@string{false}{%
+            \st@snowman@mikan@shadefalse%
+        }%
+        \st@match@string{_}{%
+            \st@snowman@boolean{mikan}{true}%
+            \st@snowman@mikan@shadetrue%
+            \def\sctkzsym@snowman@shademikan{#1}%
+        }%
+    \st@pmatchend
+}
 %leaf
-\define@key{STsnowman}{leaf}[true]{%
+\define@key{st@snowman}{leaf}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{leaf}{true}}%
         \st@match@string{false}{\st@snowman@boolean{leaf}{false}}%
@@ -269,18 +451,34 @@
             \def\sctkzsym@snowman@leaffill{#1}%
             \def\sctkzsym@snowman@leafstroke{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
 }
-\define@key{STsnowman}{leafstroke}{%
-    \st@snowman@boolean{leaf}{true}%
-    \def\sctkzsym@snowman@leafstroke{#1}%
-}
-\define@key{STsnowman}{leaffill}{%
+\define@key{st@snowman}{leaffill}{%
     \st@snowman@boolean{leaf}{true}%
     \def\sctkzsym@snowman@leaffill{#1}%
 }
+\define@key{st@snowman}{leafstroke}{%
+    \st@snowman@boolean{leaf}{true}%
+    \def\sctkzsym@snowman@leafstroke{#1}%
+}
+\define@key{st@snowman}{shadeleaf}[true]{%
+    \st@pmatchbegin{#1}%
+        \st@match@string{true}{%
+            \st@snowman@boolean{leaf}{true}%
+            \st@snowman@leaf@shadetrue%
+        }%
+        \st@match@string{false}{%
+            \st@snowman@leaf@shadefalse%
+        }%
+        \st@match@string{_}{%
+            \st@snowman@boolean{leaf}{true}%
+            \st@snowman@leaf@shadetrue%
+            \def\sctkzsym@snowman@shadeleaf{#1}%
+        }%
+    \st@pmatchend
+}
 %broom
-\define@key{STsnowman}{broom}[true]{%
+\define@key{st@snowman}{broom}[true]{%
     \st@pmatchbegin{#1}%
         \st@match@string{true}{\st@snowman@boolean{broom}{true}}%
         \st@match@string{false}{\st@snowman@boolean{broom}{false}}%
@@ -288,128 +486,101 @@
             \st@snowman@boolean{broom}{true}%
             \def\sctkzsym@snowman@broomstroke{#1}%
         }%
-    \st@pmatchend%
+    \st@pmatchend
 }
-%%%%%
-\def\STscsnowman@defaultcolor{%
-    %default color
-    %%body color
-    \def\sctkzsym@snowman@bodystroke{black}%
-    \def\sctkzsym@snowman@bodyfill{white}%
-    %%snow color
-    \def\sctkzsym@snowman@snowstroke{black}%
-    \def\sctkzsym@snowman@snowfill{white}%
-    %%eyes color
-    \def\sctkzsym@snowman@eyefill{black}%
-    %%nose color
-    \def\sctkzsym@snowman@nosestroke{black}%
-    \def\sctkzsym@snowman@nosefill{black}%
-    %%mouth color
-    \def\sctkzsym@snowman@mouthstroke{black}%
-    %%sweat color
-    \def\sctkzsym@snowman@sweatstroke{black}%
-    \def\sctkzsym@snowman@sweatfill{white}%
-    %%hat color
-    \def\sctkzsym@snowman@hatstroke{black}%
-    \def\sctkzsym@snowman@hatfill{black}%
-    %% arms color
-    \def\sctkzsym@snowman@armsstroke{black}%
-    \def\sctkzsym@snowman@armsfill{black}%
-    %%muffler color
-    \def\sctkzsym@snowman@mufflerstroke{black}%
-    \def\sctkzsym@snowman@mufflerfill{black}%
-    %%button color
-    \def\sctkzsym@snowman@buttonstroke{black}%
-    \def\sctkzsym@snowman@buttonfill{black}%
-    %%note color
-    \def\sctkzsym@snowman@notefill{black}%
-    %%mikan color
-    \def\sctkzsym@snowman@mikanstroke{black}%
-    \def\sctkzsym@snowman@mikanfill{black}%
-    %%leaf color
-    \def\sctkzsym@snowman@leafstroke{black}%
-    \def\sctkzsym@snowman@leaffill{black}%
-    %%broom color
-    \def\sctkzsym@snowman@broomstroke{black}%
-}
-%%%%%
-\def\STscsnowman@boolinit{%
-    \sctkzsym@snowman@inittrue
-    %
-    \sctkzsym@snowman@bodytrue
-    %
-    \sctkzsym@snowman@eyestrue
-    %
-    \sctkzsym@snowman@nosefalse
-    %
-    \sctkzsym@snowman@mouthtrue
+%%%%
+\def\st@snowman@boolean@default{%
+    \st@snowman@boolean{init}{true}%
+    \st@snowman@boolean{body}{true}\st@snowman@body@shadefalse%
+    \st@snowman@boolean{eyes}{true}\st@snowman@eyes@shadefalse%
+    \st@snowman@boolean{nose}{false}\st@snowman@nose@shadefalse%
+    \st@snowman@boolean{mouth}{true}%
     \def\sctkzsym@snowman@mouthshape{smile}%
-    %
-    \sctkzsym@snowman@sweatfalse
-    %
-    \sctkzsym@snowman@hatfalse
-    %
-    \sctkzsym@snowman@armsfalse
-    %
-    \sctkzsym@snowman@mufflerfalse
-    %
-    \sctkzsym@snowman@buttonsfalse
-    %
-    \sctkzsym@snowman@snowfalse
-    %
-    \sctkzsym@snowman@notefalse
-    %
-    \sctkzsym@snowman@adjustbaselinefalse
-    %
-    \sctkzsym@snowman@mikanfalse
-    %
-    \sctkzsym@snowman@leaffalse
-    %
-    \sctkzsym@snowman@broomfalse
+    \st@snowman@boolean{sweat}{false}\st@snowman@sweat@shadefalse%
+    \st@snowman@boolean{hat}{false}\st@snowman@hat@shadefalse%
+    \st@snowman@boolean{arms}{false}\st@snowman@arms@shadefalse%
+    \st@snowman@boolean{muffler}{false}\st@snowman@muffler@shadefalse%
+    \st@snowman@boolean{buttons}{false}\st@snowman@buttons@shadefalse%
+    \st@snowman@boolean{snow}{false}\st@snowman@snow@shadefalse%
+    \st@snowman@boolean{note}{false}\st@snowman@note@shadefalse%
+    \st@snowman@boolean{mikan}{false}\st@snowman@mikan@shadefalse%
+    \st@snowman@boolean{leaf}{false}\st@snowman@leaf@shadefalse%
+    \st@snowman@boolean{broom}{false}%
+    \st@snowman@boolean{adjustbaseline}{false}%
 }
-%%%%%
-\let\@scsnowman\scsnowman
-\def\scsnowman{\@ifstar{\@@scsnowman}{\@scsnowman}}%
-\DeclareRobustCommand\@@scsnowman[1][]{%
-    \STscsnowman@boolinit
-    \STscsnowman@defaultcolor
-    \def\sctkazym@snowman@scale{1}%
-    \setkeys{STsnowman}{#1}% 
-    %%%
-    %%%
-    %body
-    \def\sctkzsym@snowman@bodypath{\path[draw=\sctkzsym@snowman@bodystroke,fill=\sctkzsym@snowman@bodyfill]}%
-    %eye
-    \def\sctkzsym@snowman@eyepath{\path[fill=\sctkzsym@snowman@eyefill]}%
-    %nose
-    \def\sctkzsym@snowman@nosepath{\path[draw=\sctkzsym@snowman@nosestroke,fill=\sctkzsym@snowman@nosefill]}%
-    %mouth
-    \def\sctkzsym@snowman@mouthpath{\path[draw=\sctkzsym@snowman@mouthstroke]}%
-    %sweat
-    \def\sctkzsym@snowman@sweatpath{\path[draw=\sctkzsym@snowman@sweatstroke,fill=\sctkzsym@snowman@sweatfill]}%
-    %hat
-    \def\sctkzsym@snowman@hatpath{\path[draw=\sctkzsym@snowman@hatstroke,fill=\sctkzsym@snowman@hatfill]}%
-    %arms
-    \def\sctkzsym@snowman@armspath{\path[draw=\sctkzsym@snowman@armsstroke,fill=\sctkzsym@snowman@armsfill]}%
-    %muffler
-    \def\sctkzsym@snowman@mufflerpath{\path[draw=\sctkzsym@snowman@mufflerstroke,fill=\sctkzsym@snowman@mufflerfill]}%
-    %button
-    \def\sctkzsym@snowman@buttonpath{\path[draw=\sctkzsym@snowman@buttonstroke,fill=\sctkzsym@snowman@buttonfill]}%
-    %snow
-    \def\sctkzsym@snowman@snowpath{\path[draw=\sctkzsym@snowman@snowstroke,fill=\sctkzsym@snowman@snowfill]}%
-    %note
-    \def\sctkzsym@snowman@notepath{\path[fill=\sctkzsym@snowman@notefill]}%
-    %mikan
-    \def\sctkzsym@snowman@mikanpath{\path[draw=\sctkzsym@snowman@mikanstroke,fill=\sctkzsym@snowman@mikanfill]}%
-    %leaf
-    \def\sctkzsym@snowman@leafpath{\path[draw=\sctkzsym@snowman@leafstroke,fill=\sctkzsym@snowman@leaffill]}%
-    %broom
-    \def\sctkzsym@snowman@broompath{\path[draw=\sctkzsym@snowman@broomstroke]}%
-    %%%
-    %\setkeys{STsnowman}{#1}%
-    \set@sctkzsym@coord@scl{\sctkzsym@snowman@scale}%
-    \ifdim\sctkzsym@coord@scl<\z@\set@sctkzsym@coord@scl{-\sctkzsym@snowman@scale}\fi%
+\let\st@scsnowman@original\scsnowman
+\def\scsnowman{\@ifstar{\st@scsnowman@new}{\st@scsnowman@original}}
+\DeclareRobustCommand\st@scsnowman@new[1][]{%
+    \st@snowman@color@default
+    \st@snowman@boolean@default
+    \def\sctkzsym@snowman@scale{1}%
+    \setkeys{st@snowman}{#1}%
     %
+    \ifst@snowman@body@shade
+    \edef\sctkzsym@snowman@bodypath{\noexpand\path[draw=\sctkzsym@snowman@bodystroke, shade, \sctkzsym@snowman@shadebody]}%
+    \else
+    \def\sctkzsym@snowman@bodypath{\path[draw=\sctkzsym@snowman@bodystroke, fill=\sctkzsym@snowman@bodyfill]}%
+    \fi
+    \ifst@snowman@eyes@shade
+    \edef\sctkzsym@snowman@eyepath{\noexpand\path[shade, \sctkzsym@snowman@shadeeye]}%
+    \else
+    \def\sctkzsym@snowman@eyepath{\path[fill=\sctkzsym@snowman@eyefill]}%
+    \fi
+    \ifst@snowman@nose@shade
+    \edef\sctkzsym@snowman@nosepath{\noexpand\path[shade, draw=\sctkzsym@snowman@nosestroke, \sctkzsym@snowman@shadenose]}%
+    \else
+    \def\sctkzsym@snowman@nosepath{\path[draw=\sctkzsym@snowman@nosestroke, fill=\sctkzsym@snowman@nosefill]}%
+    \fi
+    \def\sctkzsym@snowman@mouthpath{\path[draw=\sctkzsym@snowman@mouthstroke]}%
+    \ifst@snowman@sweat@shade
+    \edef\sctkzsym@snowman@sweatpath{\noexpand\path[shade, draw=\sctkzsym@snowman@sweatstroke, \sctkzsym@snowman@shadesweat]}%
+    \else
+    \def\sctkzsym@snowman@sweatpath{\path[draw=\sctkzsym@snowman@sweatstroke, fill=\sctkzsym@snowman@sweatfill]}%
+    \fi
+    \ifst@snowman@hat@shade
+    \edef\sctkzsym@snowman@hatpath{\noexpand\path[shade, \sctkzsym@snowman@shadehat, draw=\sctkzsym@snowman@hatstroke]}%
+    \else
+    \def\sctkzsym@snowman@hatpath{\path[draw=\sctkzsym@snowman@hatstroke, fill=\sctkzsym@snowman@hatfill]}%
+    \fi
+    \ifst@snowman@arms@shade
+    \edef\sctkzsym@snowman@armspath{\noexpand\path[shade, \sctkzsym@snowman@shadearms, draw=\sctkzsym@snowman@armsstroke]}%
+    \else
+    \def\sctkzsym@snowman@armspath{\path[draw=\sctkzsym@snowman@armsstroke, fill=\sctkzsym@snowman@armsfill]}%
+    \fi
+    \ifst@snowman@muffler@shade
+    \edef\sctkzsym@snowman@mufflerpath{\noexpand\path[shade, \sctkzsym@snowman@shademuffler, draw=\sctkzsym@snowman@mufflerstroke]}%
+    \else
+    \def\sctkzsym@snowman@mufflerpath{\path[draw=\sctkzsym@snowman@mufflerstroke, fill=\sctkzsym@snowman@mufflerfill]}%
+    \fi
+    \ifst@snowman@buttons@shade
+    \edef\sctkzsym@snowman@buttonpath{\noexpand\path[shade, \sctkzsym@snowman@shadebutton, draw=\sctkzsym@snowman@buttonstroke]}%
+    \else
+    \def\sctkzsym@snowman@buttonpath{\path[draw=\sctkzsym@snowman@buttonstroke, fill=\sctkzsym@snowman@buttonfill]}%
+    \fi
+    \ifst@snowman@snow@shade
+    \edef\sctkzsym@snowman@snowpath{\noexpand\path[shade, \sctkzsym@snowman@shadesnow, draw=\sctkzsym@snowman@snowstroke]}%
+    \else
+    \def\sctkzsym@snowman@snowpath{\path[draw=\sctkzsym@snowman@snowstroke, fill=\sctkzsym@snowman@snowfill]}%
+    \fi
+    \ifst@snowman@note@shade
+    \edef\sctkzsym@snowman@notepath{\noexpand\path[shade, \sctkzsym@snowman@shadenote]}%
+    \else
+    \def\sctkzsym@snowman@notepath{\path[fill=\sctkzsym@snowman@notefill]}%
+    \fi
+    \ifst@snowman@mikan@shade
+    \edef\sctkzsym@snowman@mikanpath{\noexpand\path[shade, \sctkzsym@snowman@shademikan, draw=\sctkzsym@snowman@mikanstroke]}%
+    \else
+    \def\sctkzsym@snowman@mikanpath{\path[draw=\sctkzsym@snowman@mikanstroke, fill=\sctkzsym@snowman@mikanfill]}%
+    \fi
+    \ifst@snowman@leaf@shade
+    \edef\sctkzsym@snowman@leafpath{\noexpand\path[shade, \sctkzsym@snowman@shadeleaf, draw=\sctkzsym@snowman@leafstroke]}%
+    \else
+    \def\sctkzsym@snowman@leafpath{\path[draw=\sctkzsym@snowman@leafstroke, fill=\sctkzsym@snowman@leaffill]}%
+    \fi
+    \def\sctkzsym@snowman@broompath{\path[draw=\sctkzsym@snowman@broomstroke]}%
+    %
+    \set@sctkzsym@coord@scl{\sctkzsym@snowman@scale}%
+    \ifdim\sctkzsym@coord@scl<\z@\set@sctkzsym@coord@scl{-\sctkzsym@snowman@scale}\fi%  
     %%%%% input from def file
     %
     \expandafter\ifx\csname sctkzsym@snowman@shape@\sctkzsym@snowman@shape\endcsname\relax
@@ -418,7 +589,5 @@
     \else
       \csname sctkzsym@snowman@shape@\sctkzsym@snowman@shape\endcsname
     \fi
-    %\STscsnowman@boolinit
-    %\sctkzsym@snowman@defaultkeys
 }
 \endinput
